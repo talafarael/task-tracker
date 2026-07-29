@@ -4,8 +4,6 @@ services:
     container_name: task-tracker-mongo
     restart: unless-stopped
     command: ["--replSet", "rs0", "--bind_ip_all"]
-    ports:
-      - "27017:27017"
     volumes:
       - mongo-data:/data/db
     healthcheck:
@@ -26,9 +24,8 @@ services:
       - ./backend/.env
     environment:
       DATABASE_URL: "mongodb://mongo:27017/task-tracker?replicaSet=rs0"
-      CORS_ORIGIN: "http://localhost:5173"
     ports:
-      - "${BACKEND_PORT:-3000}:3000"
+      - "127.0.0.1:${BACKEND_PORT:-3000}:3000"
     depends_on:
       mongo:
         condition: service_healthy
@@ -38,11 +35,11 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: "http://localhost:${BACKEND_PORT:-3000}"
+        VITE_API_URL: "${VITE_API_URL:-/api}"
     container_name: task-tracker-frontend
     restart: unless-stopped
     ports:
-      - "${FRONTEND_PORT:-5173}:80"
+      - "127.0.0.1:${FRONTEND_PORT:-5173}:80"
     depends_on:
       - backend
 
