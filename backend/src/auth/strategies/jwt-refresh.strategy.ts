@@ -9,10 +9,6 @@ import {
 } from '../interfaces/jwt-payload.interface';
 import jwtConfig from '../../config/jwt.config';
 
-function extractRefreshTokenFromCookie(req: Request): string | null {
-  return (req.cookies?.refreshToken as string | undefined) ?? null;
-}
-
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
@@ -23,9 +19,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
     config: ConfigType<typeof jwtConfig>,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        extractRefreshTokenFromCookie,
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: config.refresh.secret,
       passReqToCallback: true,
@@ -33,7 +27,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
   }
 
   validate(req: Request, payload: JwtPayload): RefreshTokenUser {
-    const refreshToken = extractRefreshTokenFromCookie(req) ?? '';
+    const refreshToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req) ?? '';
     return { userId: payload.sub, email: payload.email, refreshToken };
   }
 }

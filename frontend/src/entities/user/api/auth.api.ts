@@ -1,5 +1,10 @@
 import { apiRequest, configureApiAuth } from '@/shared/api/http-client'
 import { useUserStore } from '../model/store'
+import {
+  clearRefreshToken,
+  getRefreshToken,
+  setRefreshToken,
+} from '../model/refresh-token-storage'
 import type { AuthResponse, User } from '../model/types'
 
 export interface LoginPayload {
@@ -13,25 +18,44 @@ export interface RegisterPayload {
   name?: string
 }
 
+const persistSession = (session: AuthResponse): AuthResponse => {
+  setRefreshToken(session.refreshToken)
+  return session
+}
+
 export const login = (payload: LoginPayload): Promise<AuthResponse> =>
   apiRequest<AuthResponse>('/auth/login', {
     method: 'POST',
     body: JSON.stringify(payload),
     auth: false,
-  })
+  }).then(persistSession)
 
 export const register = (payload: RegisterPayload): Promise<AuthResponse> =>
   apiRequest<AuthResponse>('/auth/register', {
     method: 'POST',
     body: JSON.stringify(payload),
     auth: false,
-  })
+  }).then(persistSession)
 
-export const refresh = (): Promise<AuthResponse> =>
-  apiRequest<AuthResponse>('/auth/refresh', { method: 'POST', auth: false })
+export const hasRefreshToken = (): boolean => getRefreshToken() !== null
+
+export const refresh = (): Promise<AuthResponse> => {
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) {
+    return Promise.reject(new Error('No refresh token available'))
+  }
+
+  return apiRequest<AuthResponse>('/auth/refresh', {
+    method: 'POST',
+    auth: false,
+    headers: { Authorization: `Bearer ${refreshToken}` },
+  }).then(persistSession)
+}
 
 export const logout = (): Promise<{ success: boolean }> =>
-  apiRequest<{ success: boolean }>('/auth/logout', { method: 'POST' })
+  apiRequest<{ success: boolean }>('/auth/logout', { method: 'POST' }).finally(
+    clearRefreshToken,
+  )
 
 export const getCurrentUser = (): Promise<User> =>
   apiRequest<User>('/auth/me')

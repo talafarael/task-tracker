@@ -7,4 +7,7 @@ export class AuthResponseEntity {
 
   @ApiProperty()
   accessToken: string;
+
+  @ApiProperty()
+  refreshToken: string;
 }

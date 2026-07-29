@@ -14,6 +14,11 @@ export const SessionProvider = ({ children }: SessionProviderProps) => {
   useEffect(() => {
     let cancelled = false
 
+    if (!authApi.hasRefreshToken()) {
+      setStatus('guest')
+      return
+    }
+
     setStatus('loading')
     authApi
       .refresh()

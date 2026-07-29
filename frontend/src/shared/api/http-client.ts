@@ -29,7 +29,6 @@ export const configureApiAuth = (handler: ApiAuthHandler): void => {
 const send = async <T>(path: string, options: RequestInit): Promise<T> => {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
