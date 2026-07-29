@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+
+  --color-cream-50: #faf3e6;
+  --color-cream-100: #f0dfba;
+  --color-cream-200: #e8c9a0;
+  --color-cream-300: #ddb586;
+
+  --color-brown-100: #cbae87;
+  --color-brown-200: #b89b78;
+  --color-brown-300: #a3845f;
+  --color-brown-400: #8a6a48;
+  --color-brown-500: #6b5842;
+  --color-brown-600: #574632;
+  --color-brown-700: #4a3826;
+  --color-brown-800: #33261a;
+  --color-brown-900: #2b1d0e;
+
+  --color-maroon-500: #7a3b3b;
+  --color-maroon-600: #632e2e;
+
+  --color-sage-500: #4f6b4a;
+  --color-sage-600: #3f5539;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  #root {
+    @apply flex min-h-svh w-full flex-col bg-cream-100 font-sans text-brown-800;
+  }
+
+  h1,
+  h2 {
+    @apply font-serif font-medium text-brown-900;
+  }
+
+  h1 {
+    @apply text-4xl tracking-tight md:text-5xl;
+  }
+
+  h2 {
+    @apply text-xl tracking-tight md:text-2xl;
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx nest *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(timeout 8 node dist/main.js)",
+      "Bash(npx eslint *)",
+      "Bash(npx tsc *)",
+      "Bash(timeout 6 node dist/main.js)"
+    ]
+  }
+}

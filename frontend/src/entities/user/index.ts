@@ -1,0 +1,6 @@
+export { useUserStore } from './model/store'
+export type { SessionStatus } from './model/store'
+export type { User, AuthResponse } from './model/types'
+export * as authApi from './api/auth.api'
+export * as userApi from './api/user.api'
+export { ApiError } from '@/shared/api/http-client'
