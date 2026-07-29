@@ -19,7 +19,10 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
 
   const notify = useCallback(
     (input: ToastInput) => {
-      const id = crypto.randomUUID()
+      const id =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`
       const duration = input.duration ?? DEFAULT_DURATION
 
       setToasts((current) => [...current, { ...input, id }])
