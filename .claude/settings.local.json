@@ -6,7 +6,8 @@
       "Bash(timeout 8 node dist/main.js)",
       "Bash(npx eslint *)",
       "Bash(npx tsc *)",
-      "Bash(timeout 6 node dist/main.js)"
+      "Bash(timeout 6 node dist/main.js)",
+      "Bash(npx prisma *)"
     ]
   }
 }

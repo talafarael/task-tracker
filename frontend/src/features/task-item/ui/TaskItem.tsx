@@ -54,6 +54,7 @@ export const TaskItem = ({ task, onUpdated, onDeleted }: TaskItemProps) => {
         type: values.type,
         points: values.points,
         repeatDays: values.type === 'RECURRING' ? values.repeatDays : undefined,
+        isRequired: values.isRequired,
       })
       onUpdated({ ...task, template })
       close()
@@ -77,6 +78,7 @@ export const TaskItem = ({ task, onUpdated, onDeleted }: TaskItemProps) => {
             type: task.template.type,
             points: task.template.points,
             repeatDays: task.template.repeatDays,
+            isRequired: task.template.isRequired,
           }}
           submitLabel="Save"
           pendingLabel="Saving…"
@@ -120,9 +122,16 @@ export const TaskItem = ({ task, onUpdated, onDeleted }: TaskItemProps) => {
           <span className="text-xs font-normal text-brown-500">
             +{task.template.points} pts
           </span>
+          {task.template.isRequired && (
+            <span className="ml-2 rounded-full bg-maroon-600/10 px-2 py-0.5 text-xs font-medium text-maroon-600">
+              Required
+            </span>
+          )}
         </p>
         {task.template.description && (
-          <p className="text-sm text-brown-600">{task.template.description}</p>
+          <p className="break-words text-sm text-brown-600">
+            {task.template.description}
+          </p>
         )}
         {task.template.repeatDays.length > 0 && (
           <p className="text-xs text-brown-500">

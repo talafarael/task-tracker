@@ -21,6 +21,9 @@ export class TaskTemplateEntity {
   repeatDays: DayOfWeek[];
 
   @ApiProperty()
+  isRequired: boolean;
+
+  @ApiProperty()
   userId: string;
 
   @ApiProperty()

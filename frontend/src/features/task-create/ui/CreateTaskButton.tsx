@@ -20,6 +20,7 @@ export const CreateTaskButton = ({ onCreated }: CreateTaskButtonProps) => {
         type: values.type,
         points: values.points,
         repeatDays: values.type === 'RECURRING' ? values.repeatDays : undefined,
+        isRequired: values.isRequired,
       })
       onCreated()
       close()

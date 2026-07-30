@@ -2,7 +2,11 @@ import { useForm } from 'react-hook-form'
 import type { RegisterOptions } from 'react-hook-form'
 import { FormField } from '@/shared/ui/form-field'
 import { CheckboxGroup } from '@/shared/ui/checkbox-group'
-import { DAY_OF_WEEK_OPTIONS, TASK_TYPE_OPTIONS } from '../model/constants'
+import {
+  DAY_OF_WEEK_OPTIONS,
+  DAYS_OF_WEEK,
+  TASK_TYPE_OPTIONS,
+} from '../model/constants'
 import type { DayOfWeek, TaskType } from '../model/types'
 
 export interface TaskFormValues {
@@ -11,6 +15,7 @@ export interface TaskFormValues {
   type: TaskType
   points: number
   repeatDays: DayOfWeek[]
+  isRequired: boolean
 }
 
 interface TaskFieldConfig {
@@ -59,6 +64,7 @@ const DEFAULT_VALUES: TaskFormValues = {
   type: 'RECURRING',
   points: 10,
   repeatDays: [],
+  isRequired: false,
 }
 
 interface TaskFormProps {
@@ -81,12 +87,21 @@ export const TaskForm = ({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<TaskFormValues>({
     defaultValues: defaultValues ?? DEFAULT_VALUES,
   })
 
   const type = watch('type')
+  const repeatDays = watch('repeatDays')
+  const allDaysSelected = repeatDays?.length === DAYS_OF_WEEK.length
+
+  const handleAllDaysChange = (checked: boolean) => {
+    setValue('repeatDays', checked ? DAYS_OF_WEEK : [], {
+      shouldDirty: true,
+    })
+  }
 
   const submit = async (values: TaskFormValues) => {
     await onSubmit(values)
@@ -110,12 +125,35 @@ export const TaskForm = ({
         />
       ))}
       {type === 'RECURRING' && (
-        <CheckboxGroup
-          label="Repeat on"
-          options={DAY_OF_WEEK_OPTIONS}
-          registration={register('repeatDays')}
-        />
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-left">
+            <input
+              type="checkbox"
+              checked={allDaysSelected}
+              onChange={(event) => handleAllDaysChange(event.target.checked)}
+              className="h-4 w-4 rounded border-brown-300/60 text-brown-600 focus:ring-brown-500"
+            />
+            <span className="text-sm font-medium text-brown-700">
+              All days
+            </span>
+          </label>
+          <CheckboxGroup
+            label="Repeat on"
+            options={DAY_OF_WEEK_OPTIONS}
+            registration={register('repeatDays')}
+          />
+        </div>
       )}
+      <label className="flex items-center gap-2 text-left">
+        <input
+          type="checkbox"
+          {...register('isRequired')}
+          className="h-4 w-4 rounded border-brown-300/60 text-brown-600 focus:ring-brown-500"
+        />
+        <span className="text-sm font-medium text-brown-700">
+          Required task
+        </span>
+      </label>
       <div className="flex gap-2">
         <button
           type="submit"

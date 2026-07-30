@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -51,4 +52,11 @@ export class CreateTaskTemplateDto {
   @IsArray()
   @IsEnum(DayOfWeek, { each: true })
   repeatDays?: DayOfWeek[];
+
+  @ApiProperty({
+    example: true,
+    description: 'Whether this task is mandatory to complete',
+  })
+  @IsBoolean()
+  isRequired: boolean;
 }

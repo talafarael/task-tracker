@@ -54,6 +54,7 @@ model TaskTemplate {
   description String?
   type        TaskType    @default(RECURRING)
   points      Int         @default(10)
+  isRequired  Boolean     @default(false)
   repeatDays  DayOfWeek[]
   tasks       Task[]
   user        User        @relation(fields: [userId], references: [id])

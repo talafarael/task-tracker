@@ -18,6 +18,7 @@ export interface TaskTemplate {
   type: TaskType
   points: number
   repeatDays: DayOfWeek[]
+  isRequired: boolean
   userId: string
   createdAt: string
   updatedAt: string
