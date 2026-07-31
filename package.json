@@ -6,12 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend": "npm run start:dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
     "backend:docker": "docker compose up -d --build mongo backend",
     "backend:docker:down": "docker compose down mongo backend",
     "backend:docker:logs": "docker compose logs -f mongo backend",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f"
+    "docker:logs": "docker compose logs -f",
+    "docker:reload": "docker compose up -d --build"
   },
   "keywords": [],
   "author": "",
