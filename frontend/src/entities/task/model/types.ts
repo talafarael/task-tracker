@@ -19,6 +19,8 @@ export interface TaskTemplate {
   points: number
   repeatDays: DayOfWeek[]
   isRequired: boolean
+  startDate: string | null
+  endDate: string | null
   userId: string
   createdAt: string
   updatedAt: string

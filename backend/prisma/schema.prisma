@@ -57,6 +57,11 @@ model TaskTemplate {
   points      Int         @default(10)
   isRequired  Boolean     @default(false)
   repeatDays  DayOfWeek[]
+  // Optional date range (SPECIFIC only). When set, instances are spawned
+  // for every day from startDate to endDate inclusive, instead of just
+  // the single day the template was created on.
+  startDate   String?
+  endDate     String?
   tasks       Task[]
   user        User        @relation(fields: [userId], references: [id])
   userId      String      @db.ObjectId

@@ -23,6 +23,12 @@ export class TaskTemplateEntity {
   @ApiProperty()
   isRequired: boolean;
 
+  @ApiProperty({ nullable: true })
+  startDate: string | null;
+
+  @ApiProperty({ nullable: true })
+  endDate: string | null;
+
   @ApiProperty()
   userId: string;
 

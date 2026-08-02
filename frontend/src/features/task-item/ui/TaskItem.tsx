@@ -55,6 +55,8 @@ export const TaskItem = ({ task, onUpdated, onDeleted }: TaskItemProps) => {
         points: values.points,
         repeatDays: values.type === 'RECURRING' ? values.repeatDays : undefined,
         isRequired: values.isRequired,
+        startDate: values.type === 'SPECIFIC' ? values.startDate || undefined : undefined,
+        endDate: values.type === 'SPECIFIC' ? values.endDate || undefined : undefined,
       })
       onUpdated({ ...task, template })
       close()
@@ -79,6 +81,8 @@ export const TaskItem = ({ task, onUpdated, onDeleted }: TaskItemProps) => {
             points: task.template.points,
             repeatDays: task.template.repeatDays,
             isRequired: task.template.isRequired,
+            startDate: task.template.startDate ?? '',
+            endDate: task.template.endDate ?? '',
           }}
           submitLabel="Save"
           pendingLabel="Saving…"
@@ -139,6 +143,11 @@ export const TaskItem = ({ task, onUpdated, onDeleted }: TaskItemProps) => {
             {task.template.repeatDays
               .map((day) => DAY_OF_WEEK_LABELS[day])
               .join(', ')}
+          </p>
+        )}
+        {task.template.startDate && task.template.endDate && (
+          <p className="text-xs text-brown-500">
+            {task.template.startDate} – {task.template.endDate}
           </p>
         )}
       </div>

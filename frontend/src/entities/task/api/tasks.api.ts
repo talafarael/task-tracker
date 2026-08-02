@@ -14,6 +14,8 @@ export interface CreateTaskTemplatePayload {
   points?: number
   repeatDays?: DayOfWeek[]
   isRequired: boolean
+  startDate?: string
+  endDate?: string
 }
 
 export type UpdateTaskTemplatePayload = Partial<CreateTaskTemplatePayload>

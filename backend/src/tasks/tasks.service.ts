@@ -3,18 +3,30 @@ import { TaskStatus, TaskTemplate, TaskType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskQueryDto } from './dto/task-query.dto';
-import { dayOfWeekFor, todayDateString } from '../common/date.util';
+import { dateRange, dayOfWeekFor, todayDateString } from '../common/date.util';
 
 @Injectable()
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Spawns a Task instance for every RECURRING template that occurs on
-  // `date` and doesn't have one yet.
+  // Spawns a Task instance for every template that occurs on `date` and
+  // doesn't have one yet: RECURRING templates matching the weekday, and
+  // SPECIFIC templates with an endDate at or after `date` (and, if set, a
+  // startDate at or before it — an unset startDate means "from the start").
   private async ensureForDate(userId: string, date: string): Promise<void> {
     const weekday = dayOfWeekFor(date);
     const templates = await this.prisma.taskTemplate.findMany({
-      where: { userId, type: TaskType.RECURRING, repeatDays: { has: weekday } },
+      where: {
+        userId,
+        OR: [
+          { type: TaskType.RECURRING, repeatDays: { has: weekday } },
+          {
+            type: TaskType.SPECIFIC,
+            endDate: { gte: date },
+            OR: [{ startDate: null }, { startDate: { lte: date } }],
+          },
+        ],
+      },
     });
     if (templates.length === 0) {
       return;
@@ -48,27 +60,44 @@ export class TasksService {
     });
   }
 
-  // Called right after a new template is created: RECURRING templates get
-  // today's instance if today matches their schedule, SPECIFIC templates
-  // always get a single instance for today.
+  // Called right after a new template is created. RECURRING templates get
+  // today's instance if today matches their schedule (later days are
+  // spawned lazily by ensureForDate as they're viewed). SPECIFIC templates
+  // with an endDate get an instance for every day from startDate (or today,
+  // if startDate is unset) through endDate, up front, so the task shows for
+  // the whole period immediately. SPECIFIC templates without an endDate get
+  // a single instance for today.
   async createTodayInstanceForNewTemplate(
     template: TaskTemplate,
   ): Promise<void> {
     const today = todayDateString();
-    const appliesToday =
-      template.type === TaskType.SPECIFIC ||
-      template.repeatDays.includes(dayOfWeekFor(today));
-    if (!appliesToday) {
+
+    if (template.type === TaskType.RECURRING) {
+      if (!template.repeatDays.includes(dayOfWeekFor(today))) {
+        return;
+      }
+      await this.prisma.task.create({
+        data: {
+          templateId: template.id,
+          userId: template.userId,
+          date: today,
+          status: TaskStatus.TODO,
+        },
+      });
       return;
     }
 
-    await this.prisma.task.create({
-      data: {
+    const dates = template.endDate
+      ? dateRange(template.startDate ?? today, template.endDate)
+      : [today];
+
+    await this.prisma.task.createMany({
+      data: dates.map((date) => ({
         templateId: template.id,
         userId: template.userId,
-        date: today,
+        date,
         status: TaskStatus.TODO,
-      },
+      })),
     });
   }
 

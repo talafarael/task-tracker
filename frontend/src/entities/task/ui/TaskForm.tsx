@@ -16,6 +16,8 @@ export interface TaskFormValues {
   points: number
   repeatDays: DayOfWeek[]
   isRequired: boolean
+  startDate: string
+  endDate: string
 }
 
 interface TaskFieldConfig {
@@ -65,6 +67,8 @@ const DEFAULT_VALUES: TaskFormValues = {
   points: 10,
   repeatDays: [],
   isRequired: false,
+  startDate: '',
+  endDate: '',
 }
 
 interface TaskFormProps {
@@ -95,6 +99,7 @@ export const TaskForm = ({
 
   const type = watch('type')
   const repeatDays = watch('repeatDays')
+  const startDate = watch('startDate')
   const allDaysSelected = repeatDays?.length === DAYS_OF_WEEK.length
 
   const handleAllDaysChange = (checked: boolean) => {
@@ -141,6 +146,27 @@ export const TaskForm = ({
             label="Repeat on"
             options={DAY_OF_WEEK_OPTIONS}
             registration={register('repeatDays')}
+          />
+        </div>
+      )}
+      {type === 'SPECIFIC' && (
+        <div className="grid grid-cols-2 gap-3">
+          <FormField
+            label="Start date (optional)"
+            type="date"
+            errorMessage={errors.startDate?.message}
+            registration={register('startDate')}
+          />
+          <FormField
+            label="End date"
+            type="date"
+            errorMessage={errors.endDate?.message}
+            registration={register('endDate', {
+              required: 'End date is required',
+              validate: (value) =>
+                !startDate || value >= startDate ||
+                'End date must be on or after start date',
+            })}
           />
         </div>
       )}

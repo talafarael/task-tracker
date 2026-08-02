@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
+  IsDateString,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -59,4 +60,22 @@ export class CreateTaskTemplateDto {
   })
   @IsBoolean()
   isRequired: boolean;
+
+  @ApiPropertyOptional({
+    example: '2026-08-01',
+    description:
+      'First day the task is shown on (SPECIFIC only). Defaults to today if omitted.',
+  })
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
+
+  @ApiPropertyOptional({
+    example: '2026-08-10',
+    description:
+      'Last day the task is shown on, inclusive (SPECIFIC only). Required to make the task span multiple days.',
+  })
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
 }
