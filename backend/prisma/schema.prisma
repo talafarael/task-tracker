@@ -44,11 +44,15 @@ enum DayOfWeek {
 
 enum TaskType {
   RECURRING
-  SPECIFIC
+  // A task tied to a date range rather than a weekly schedule. It has a
+  // single Task instance (and therefore a single shared status) shown on
+  // every day within [startDate, endDate] — completing it on any one day
+  // completes it everywhere in the range.
+  PERIOD
 }
 
-// A recurring or one-off task definition. Does not itself get shown/checked
-// off — concrete per-day Task instances are spawned from it on demand.
+// A recurring or period task definition. Does not itself get shown/checked
+// off — concrete Task instances are spawned from it on demand.
 model TaskTemplate {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   title       String
@@ -57,9 +61,8 @@ model TaskTemplate {
   points      Int         @default(10)
   isRequired  Boolean     @default(false)
   repeatDays  DayOfWeek[]
-  // Optional date range (SPECIFIC only). When set, instances are spawned
-  // for every day from startDate to endDate inclusive, instead of just
-  // the single day the template was created on.
+  // Date range (PERIOD only). Normalized on create/update so both are
+  // always set: startDate defaults to today, endDate defaults to startDate.
   startDate   String?
   endDate     String?
   tasks       Task[]
@@ -69,9 +72,11 @@ model TaskTemplate {
   updatedAt   DateTime    @updatedAt
 }
 
-// A single day's occurrence of a TaskTemplate. Created lazily: RECURRING
-// instances get spawned the first time their day is viewed, SPECIFIC
-// instances get spawned once, for today, right when the template is created.
+// A concrete occurrence of a TaskTemplate. RECURRING templates get one Task
+// per matching day, spawned lazily the first time that day is viewed. PERIOD
+// templates get exactly one Task for their whole [startDate, endDate] range,
+// spawned once when the template is created — its `date` field is just the
+// range's anchor (startDate), not a per-day marker.
 model Task {
   id         String       @id @default(auto()) @map("_id") @db.ObjectId
   date       String

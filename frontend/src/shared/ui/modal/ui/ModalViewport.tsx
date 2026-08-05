@@ -35,7 +35,7 @@ export const ModalViewport = ({ content, onRequestClose }: ModalViewportProps) =
         role="dialog"
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
-        className="w-full max-w-md rounded-lg border border-brown-300/40 bg-cream-50 p-6 shadow-lg"
+        className="custom-scrollbar max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg border border-brown-300/40 bg-cream-50 p-6 shadow-lg"
       >
         {content}
       </div>

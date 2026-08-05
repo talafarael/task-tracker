@@ -149,7 +149,7 @@ export const TaskForm = ({
           />
         </div>
       )}
-      {type === 'SPECIFIC' && (
+      {type === 'PERIOD' && (
         <div className="grid grid-cols-2 gap-3">
           <FormField
             label="Start date (optional)"
@@ -158,13 +158,12 @@ export const TaskForm = ({
             registration={register('startDate')}
           />
           <FormField
-            label="End date"
+            label="End date (optional)"
             type="date"
             errorMessage={errors.endDate?.message}
             registration={register('endDate', {
-              required: 'End date is required',
               validate: (value) =>
-                !startDate || value >= startDate ||
+                !value || !startDate || value >= startDate ||
                 'End date must be on or after start date',
             })}
           />

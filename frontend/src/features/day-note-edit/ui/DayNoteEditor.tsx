@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ApiError } from '@/shared/api/http-client'
 import { useToast } from '@/shared/ui/toast'
 import { dayNotesApi } from '@/entities/day-note'
@@ -13,6 +13,14 @@ export const DayNoteEditor = ({ date }: DayNoteEditorProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const savedTextRef = useRef('')
   const requestIdRef = useRef(0)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useLayoutEffect(() => {
+    const element = textareaRef.current
+    if (!element) return
+    element.style.height = 'auto'
+    element.style.height = `${element.scrollHeight}px`
+  }, [text, isLoading])
 
   const loadNote = useCallback(async () => {
     const requestId = ++requestIdRef.current
@@ -53,13 +61,14 @@ export const DayNoteEditor = ({ date }: DayNoteEditorProps) => {
 
   return (
     <textarea
+      ref={textareaRef}
       value={isLoading ? '' : text}
       onChange={(event) => setText(event.target.value)}
       onBlur={() => void handleBlur()}
       disabled={isLoading}
       placeholder="Write anything about this day…"
       rows={12}
-      className="w-full resize-y rounded-md border border-brown-300/60 bg-cream-200 p-3 text-sm text-brown-900 shadow-sm focus:border-brown-500 focus:outline-none disabled:opacity-50"
+      className="custom-scrollbar w-full resize-none overflow-hidden rounded-md border border-brown-300/60 bg-cream-200 p-3 text-sm text-brown-900 shadow-sm focus:border-brown-500 focus:outline-none disabled:opacity-50"
     />
   )
 }

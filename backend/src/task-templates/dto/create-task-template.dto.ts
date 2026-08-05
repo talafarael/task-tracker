@@ -27,7 +27,7 @@ export class CreateTaskTemplateDto {
     enum: TaskType,
     default: TaskType.RECURRING,
     description:
-      'RECURRING templates spawn a task on every matching weekday; SPECIFIC templates spawn a single one-off task for today',
+      'RECURRING templates spawn a task on every matching weekday; PERIOD templates spawn a single task shared across their whole date range',
   })
   @IsOptional()
   @IsEnum(TaskType)
@@ -64,7 +64,7 @@ export class CreateTaskTemplateDto {
   @ApiPropertyOptional({
     example: '2026-08-01',
     description:
-      'First day the task is shown on (SPECIFIC only). Defaults to today if omitted.',
+      'First day the task is shown on (PERIOD only). Defaults to today if omitted.',
   })
   @IsOptional()
   @IsDateString()
@@ -73,7 +73,7 @@ export class CreateTaskTemplateDto {
   @ApiPropertyOptional({
     example: '2026-08-10',
     description:
-      'Last day the task is shown on, inclusive (SPECIFIC only). Required to make the task span multiple days.',
+      'Last day the task is shown on, inclusive (PERIOD only). Defaults to startDate if omitted.',
   })
   @IsOptional()
   @IsDateString()

@@ -13,11 +13,11 @@ export const TASK_STATUS_OPTIONS = TASK_STATUSES.map((status) => ({
   label: TASK_STATUS_LABELS[status],
 }))
 
-export const TASK_TYPES: TaskType[] = ['RECURRING', 'SPECIFIC']
+export const TASK_TYPES: TaskType[] = ['RECURRING', 'PERIOD']
 
 export const TASK_TYPE_LABELS: Record<TaskType, string> = {
   RECURRING: 'Recurring',
-  SPECIFIC: 'Specific',
+  PERIOD: 'Period',
 }
 
 export const TASK_TYPE_OPTIONS = TASK_TYPES.map((type) => ({

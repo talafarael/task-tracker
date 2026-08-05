@@ -60,8 +60,8 @@ export const TaskBoard = () => {
   const recurringTasks = visibleTasks.filter(
     (task) => task.template.type === 'RECURRING',
   )
-  const specificTasks = visibleTasks.filter(
-    (task) => task.template.type === 'SPECIFIC',
+  const periodTasks = visibleTasks.filter(
+    (task) => task.template.type === 'PERIOD',
   )
 
   const handleCreated = () => {
@@ -138,11 +138,11 @@ export const TaskBoard = () => {
             </div>
           )}
 
-          {!isLoading && specificTasks.length > 0 && (
+          {!isLoading && periodTasks.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-sm font-medium text-brown-700">Specific</h2>
+              <h2 className="text-sm font-medium text-brown-700">Period</h2>
               <div className="space-y-3">
-                {specificTasks.map((task) => (
+                {periodTasks.map((task) => (
                   <TaskItem
                     key={task.id}
                     task={task}

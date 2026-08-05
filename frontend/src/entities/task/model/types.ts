@@ -1,6 +1,6 @@
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE'
 
-export type TaskType = 'RECURRING' | 'SPECIFIC'
+export type TaskType = 'RECURRING' | 'PERIOD'
 
 export type DayOfWeek =
   | 'MONDAY'
